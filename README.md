@@ -2,7 +2,7 @@ A package containing functions I've found useful during my time doing data scien
 
 3 functions are included in this package:
 - stata_join
-  A function for doing merges in R slightly less blindly
+  A function for doing merges in R slightly less blind
 - bind_cols_fill
   An adaptation of bind_cols, suitable for data frame with differing numbers of rows
 - xy_compare
