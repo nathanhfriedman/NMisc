@@ -70,33 +70,32 @@ xy_compare <- function(.data, threshold = 0.1){
     
   }
   
-  temp <- .data %>% mutate(matches = T,
+  results <- .data %>% mutate(matches = T,
                            deviant_cols = "")
   
   for(var in comp.cols.unique$var){
     
     if(comp.cols.unique$value[comp.cols.unique$var == var] != "double"){
-      temp %<>% mutate(!!var := get(str_c(var,".x")) == get(str_c(var,".y")),
-                       matches = matches & get(var),
-                       deviant_cols = case_when(!get(var) & deviant_cols != "" ~ str_c(deviant_cols,", ",var),
-                                                !get(var) & deviant_cols == "" ~ var,
-                                                T~deviant_cols))
+      results %<>% mutate(!!var := get(str_c(var,".x")) == get(str_c(var,".y")),
+                          matches = matches & get(var),
+                          deviant_cols = case_when(!get(var) & deviant_cols != "" ~ str_c(deviant_cols,", ",var),
+                                                   !get(var) & deviant_cols == "" ~ var,
+                                                   T~deviant_cols))
     } else {
-      temp %<>% mutate(!!var := case_when(is.na(get(str_c(var,".x"))) & is.na(get(str_c(var,".y"))) ~ T,
-                                          T ~ coalesce(abs(get(str_c(var,".x")) - get(str_c(var,".y"))) < threshold,
-                                                       FALSE)
-                                          ),
-                       matches = matches & get(var),
-                       deviant_cols = case_when(!get(var) & deviant_cols != ""~ str_c(deviant_cols,", ",var),
-                                                !get(var) & deviant_cols == ""~ var,
-                                                T~deviant_cols))
+      results %<>% mutate(!!var := case_when(is.na(get(str_c(var,".x"))) & is.na(get(str_c(var,".y"))) ~ T,
+                                             T ~ coalesce(abs(get(str_c(var,".x")) - get(str_c(var,".y"))) < threshold,
+                                                          FALSE) ),
+                          matches = matches & get(var),
+                          deviant_cols = case_when(!get(var) & deviant_cols != ""~ str_c(deviant_cols,", ",var),
+                                                   !get(var) & deviant_cols == ""~ var,
+                                                   T~deviant_cols))
     }
   }
   
-  temp <- temp %>% select(row,matches,deviant_cols) 
+  results %<>% select(row,matches,deviant_cols) 
   
   .data %>% select(-matches("\\.x|\\.y"), comp.cols$var) %>% 
-            left_join(temp, by = "row") %>%
+            left_join(results, by = "row") %>%
             select(-row) 
   
 }
