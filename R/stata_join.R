@@ -87,13 +87,12 @@ stata_join <- function(x,y,by, type = "left",quiet = F){
                                        n = nrow(z) - max(0,.$n[.$merge == "Not merged: Using"],na.rm=T) -nrow(x)) %>%
                                mutate(n = ifelse(row_number() == 3,n[3]-n[4],n))
   
-  print_output %<>% mutate(p = case_when( is.na(m_) ~ 999,
+ print_output %<>% mutate(p = case_when( is.na(m_) | m_ == 3~ -999,
                                           m_ == 1 ~ n/nrow(x),
-                                          m_ == 2 ~ n/nrow(y),
-                                          m_ == 3 ~ 999)) %>%
-                    mutate(n = case_when(!is.na(m_) & m_ != 3 ~str_c(n," (",round(100*p,1),"%)"),
-                                         T~as.character(n))) %>%
-                    select(merge,n)
+                                          m_ == 2 ~ n/nrow(y))) %>%
+                   mutate(n = case_when(p != -999 ~ str_c(n," (",round(100*p,1),"%)"),
+                                        T~as.character(n))) %>%
+                   select(merge,n)
 
   
   if(type == "left"){
@@ -104,7 +103,6 @@ stata_join <- function(x,y,by, type = "left",quiet = F){
     print(print_output)
     print(now() - start)
   }
-  
   
   return(z)
   
