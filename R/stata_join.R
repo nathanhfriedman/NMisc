@@ -17,7 +17,6 @@
 #' @param quiet, this logical parameter specifies whether or not to display output. If 
 #'  `TRUE`, merge summary will not be displayed. If `'FALSE' (default) the 
 #'   summary will be displayed.
-#'   Possible values are:
 #'   
 #' @output `stata_join` prints a summary of the merge. This includes:
 #'  - The number and percentage of observations not merged from the master (x)
