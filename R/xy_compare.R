@@ -50,12 +50,12 @@ xy_compare <- function(.data, threshold = 0.1){
   
   var.types <- sapply(.data,typeof) %>% enframe()
   
-  comp.cols <- colnames(.data) %>% .[str_detect(.,".x|.y")] %>% 
+  comp.cols <- colnames(.data) %>% .[str_detect(.,"\\.x|\\.y")] %>% 
                                    sort() %>% 
                                    tibble(var = .) %>% 
                                    left_join(var.types,by = c("var" = "name"))
   
-  comp.cols.unique <- comp.cols %>% mutate(var = str_remove(var,".x|.y")) %>%
+  comp.cols.unique <- comp.cols %>% mutate(var = str_remove(var,"\\.x|\\.y")) %>%
                                     distinct() 
   
   comp.cols.check <- comp.cols.unique %>% group_by(var) %>%
